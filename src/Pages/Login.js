@@ -28,6 +28,8 @@ export default function Login(props) {
                     console.log(data)
                     if (!data.success) {
                         setError(data.message)
+                    } else {
+                        setError(data.message)
                     }
                 })
                 .catch((error) => {

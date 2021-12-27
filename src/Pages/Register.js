@@ -13,28 +13,29 @@ export default function Register(props) {
     //username can be letters and numbers (possible with "_"), but without special characters, e.g., ! @ # ?
     var testRegex = /\W/; // regex that hasn't letters, numbers but a special characters
     function CheckUsername(event) {
-        setUserName(event.target.value)
+        setUserName(event.target.value);
+        setError("");
         if (testRegex.test(event.target.value)) {
             setError("Username must be a mixure of upper and lower case of letters and numbers not include special character, e.g., ! @ # ? ");
         }
     }
 
-    //Use a password you don't use elsewhere, min 8 characters, include ABcd123!
+    //use a password you don't use elsewhere, min 8 characters, include ABcd123!
     function CheckPassword(event) {
         setPassword(event.target.value)
-        // let upLetterRegex = /[A-Z]/; // regex for uppercase
-        //|| !testRegex.test(password) || !upLetterRegex.test(password)
-        if (event.target.value.length < 8) {
+        setError("");
+        let upLetterRegex = /[A-Z]/; // regex for uppercase
+        if (event.target.value.length < 8 || !testRegex.test(event.target.value) || !upLetterRegex.test(event.target.value)) {
             setError("Password must be at least 8 characters, a mixure of upper and lower case of letters and numbers includes of at least one special character, e.g., ! @ # ? ");
         }
     }
 
-    // checking if the passwords match
+    //checking if the passwords match
     function CheckMatchPasswords(event) {
         setPasswordAgian(event.target.value)
+        setError("");
         if (password !== event.target.value) {
             setError("Password doesn't match, please re-enter your password");
-            setPasswordAgian("");
         }
     }
 
@@ -42,7 +43,6 @@ export default function Register(props) {
 
         e.preventDefault();
         const data = { userName, password };
-
         fetch("http://localhost:4000/register", {
             method: "POST",
             body: JSON.stringify(data),
@@ -56,15 +56,17 @@ export default function Register(props) {
                 console.log(data)
                 if (!data.success) {
                     setError(data.message)
+                } else {
+                    setError(data.message)
                 }
             })
             .catch((error) => {
                 console.log(error);
             });
+
         setUserName("");
         setPassword("");
         setPasswordAgian("");
-
 
     }
 
@@ -85,11 +87,11 @@ export default function Register(props) {
                     setPassInstruction("Use a password you don't use elsewhere")
                 }} onChange={CheckPassword} required></input>
                 <span> {passInstruction}</span>
-                <h6>Enter your password again</h6>
-
+                <h6>Enter your password again:</h6>
                 <input className="passInput" type="password" value={passwordAgain} onClick={() => { setNameInstruction(""); setPassInstruction(""); }}
                     onChange={CheckMatchPasswords} required></input>
                 <button className="BTN" onClick={Click}>Register</button>
+                <a href="http://localhost:3000/login">Login</a>
                 <span>{error}</span>
             </div>
         </>
